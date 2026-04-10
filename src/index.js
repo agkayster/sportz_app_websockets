@@ -2,6 +2,7 @@ import express from 'express';
 const app = express();
 const PORT = 8000;
 
+// middleware to read JSON content
 app.use(express.json());
 
 app.get('/', (req, res) => {
