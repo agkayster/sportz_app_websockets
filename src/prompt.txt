@@ -1,0 +1,4 @@
+// Prompt: Set up a simple Express.js server
+Set up a simple Express.js server in JavaScript that listens on port 8000, uses JSON middleware,
+has a root GET route that returns a short message, and logs URL when the server starts.
+
