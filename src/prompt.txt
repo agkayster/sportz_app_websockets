@@ -3,9 +3,9 @@ Set up a simple Express.js server in JavaScript that listens on port 8000, uses 
 has a root GET route that returns a short message, and logs URL when the server starts.
 
 
-# 💡 AI Prompt: Integrate a TypeScript/Node.js Project with Neon and Drizzle ORM
+# 💡 AI Prompt: Integrate a JavaScript/Node.js Project with Neon and Drizzle ORM
 
-**Role:** You are an expert software agent responsible for configuring the current TypeScript/Node.js project to connect to a Neon Postgres database using Drizzle ORM.
+**Role:** You are an expert software agent responsible for configuring the current JavaScript/Node.js project to connect to a Neon Postgres database using Drizzle ORM.
 
 **Purpose:** To install the necessary packages, configure Drizzle Kit for migrations, define a database schema, and provide a working script that demonstrates a full CRUD (Create, Read, Update, Delete) lifecycle.
 
@@ -19,7 +19,7 @@ has a root GET route that returns a short message, and logs URL when the server 
 
 ## 🛠️ Instructions (for AI-enabled editors)
 
-When this prompt is triggered, automatically configure the open TypeScript/Node.js project as follows:
+When this prompt is triggered, automatically configure the open JavaScript/Node.js project as follows:
 
 Detect the package manager used in this project (`npm`, `yarn`, `pnpm`, `bun`, etc.). Use it for all subsequent package management and script execution commands. The following instructions assume `npm`, but adapt commands as necessary for the detected package manager.
 
@@ -73,9 +73,9 @@ Based on the user's choice, run the appropriate installation command:
 
 ### 5. Create Drizzle Configuration
 
-Create a `drizzle.config.ts` file in the project root. This file is the same for all driver choices.
+Create a `drizzle.config.js` file in the project root. This file is the same for all driver choices.
 
-```typescript title="drizzle.config.ts"
+```typescript title="drizzle.config.js"
 import 'dotenv/config';
 import { defineConfig } from "drizzle-kit";
 
@@ -84,7 +84,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
-  schema: "./src/schema.ts",
+  schema: "./src/schema.js",
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
@@ -95,9 +95,9 @@ export default defineConfig({
 
 ### 6. Define Database Schema
 
-Create a `src/schema.ts` file to define the database tables. This schema is the same for all driver choices.
+Create a `src/schema.js` file to define the database tables. This schema is the same for all driver choices.
 
-```typescript title="src/schema.ts"
+```typescript title="src/schema.js"
 import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
 // Define the 'demo_users' table
@@ -113,12 +113,12 @@ export type User = typeof demoUsers.$inferSelect;
 export type NewUser = typeof demoUsers.$inferInsert;
 ```
 
-### 7. Create the Database Client (`src/db.ts`)
+### 7. Create the Database Client (`src/db.js`)
 
-Create a `src/db.ts` file with the content corresponding to the user's chosen driver.
+Create a `src/db.js` file with the content corresponding to the user's chosen driver.
 
 #### Option 1: Neon Serverless (HTTP) Driver
-```typescript title="src/db.ts"
+```typescript title="src/db.js"
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
@@ -132,7 +132,7 @@ export const db = drizzle(sql);
 ```
 
 #### Option 2: Neon WebSocket Driver
-```typescript title="src/db.ts"
+```typescript title="src/db.js"
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { Pool, neonConfig } from '@neondatabase/serverless';
@@ -150,7 +150,7 @@ export const db = drizzle(pool);
 ```
 
 #### Option 3: `node-postgres` Driver
-```typescript title="src/db.ts"
+```typescript title="src/db.js"
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
@@ -168,9 +168,9 @@ export const db = drizzle(pool);
 
 ### 8. Create CRUD Example Script
 
-Create a `src/index.ts` file. This script will work with any of the driver configurations.
+Create a `src/index.js` file. This script will work with any of the driver configurations.
 
-```typescript title="src/index.ts"
+```typescript title="src/index.js"
 import { eq } from 'drizzle-orm';
 // The 'pool' export will only exist for WebSocket and node-postgres drivers
 import { db, pool } from './db';
@@ -259,7 +259,7 @@ Once the setup is complete:
     ```
 4.  Finally, run the example CRUD script:
     ```bash
-    npx tsx src/index.ts
+    npx tsx src/index.js
     ```
 5.  If successful, the output should show log messages for each C-R-U-D step.
 
@@ -270,14 +270,23 @@ Once the setup is complete:
 Before suggesting code or making edits, ensure:
 - The user's choice of driver adapter is respected throughout the setup.
 - The project's detected package manager is used for all commands.
-- The `drizzle.config.ts` file is correctly configured.
-- The `src/db.ts` file uses the correct Drizzle adapter (`neon-http`, `neon-serverless`, or `node-postgres`) and underlying driver (`@neondatabase/serverless` or `pg`) based on the selection.
+- The `drizzle.config.js` file is correctly configured.
+- The `src/db.js` file uses the correct Drizzle adapter (`neon-http`, `neon-serverless`, or `node-postgres`) and underlying driver (`@neondatabase/serverless` or `pg`) based on the selection.
 - **If the Neon WebSocket driver is chosen,** ensure `ws` is a dependency and `neonConfig.webSocketConstructor = ws;` is present.
-- **If a connection pool is created (`node-postgres` or WebSocket),** ensure it is exported from `src/db.ts` and the `finally` block in `src/index.ts` correctly closes it.
+- **If a connection pool is created (`node-postgres` or WebSocket),** ensure it is exported from `src/db.js` and the `finally` block in `src/index.js` correctly closes it.
 
 ---
 
 ## ❌ Do Not
 
-- Do not hardcode credentials in any `.ts` or `.json` file.
+- Do not hardcode credentials in any `.js` or `.json` file.
 - Do not output the contents of the `.env` file or the user's connection string in any response.
+
+
+## PROMPT FOR CREATING OUR DB SCHEMA ##########################
+Act as a senior software architect. Generate a `src/db/schema.js` file using Drizzle ORM and PostgreSQL for a real-time sports application.
+
+- Create a match_status enum with values scheduled, live, and finished.
+- Create a matches table with the fields id, sport, homeTeam, awayTeam, status, startTime, endTime, homeScore with default 0, awayScore with default 0, and createdAt with default now.
+- Create a commentary table with the fields id, matchId referencing the matches table, minute, sequence, period, eventType, actor, team, message, metadata(jsonb), tags, and createdAt with default now.
+- Ensure you use camelCase for the variable names and the default snake_case naming convention for all database columns.
