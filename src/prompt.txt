@@ -292,7 +292,7 @@ Act as a senior software architect. Generate a `src/db/schema.js` file using Dri
 - Ensure you use camelCase for the variable names and the default snake_case naming convention for all database columns.
 
 
-### PROMPT TO CREAT ZOD FORM FOR SCHEMA VALIDATION ##########################
+### PROMPT TO CREATE ZOD FORM FOR SCHEMA VALIDATION ##########################
 Act as a senior software engineer. Generate a validation file using Zod at `src/validation/matches.js` that exactly follows these requirements.
 
 - Create a listMatchesQuerySchema that validates an optional limit as a coerced positive integer with a maximum of 100.
