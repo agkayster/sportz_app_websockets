@@ -22,14 +22,14 @@ matchRouter.get("/", async (req, res) => {
 
   // if no parsed
   if (!parsed.success) {
-    res.status(400).json({
+    return res.status(400).json({
       error: "Invalid query",
       details: JSON.stringify(parsed.error),
     });
   }
 
   // create a limit of how many matches in a single call e.g. 100
-  const limit = Math.min(parsed.data ?? 50, MAX_LIMIT);
+  const limit = Math.min(parsed.data.limit ?? 50, MAX_LIMIT);
   try {
     const result = await db
       .select()
@@ -40,9 +40,8 @@ matchRouter.get("/", async (req, res) => {
     // send result info to frontend
     res.json({ result });
   } catch (e) {
-    res
-      .status(500)
-      .json({ error: "Failed to list matches", details: JSON.stringify(e) });
+    console.error("Failed to list matches", e);
+    res.status(500).json({ error: "Failed to list matches" });
   }
 });
 
@@ -51,18 +50,15 @@ matchRouter.post("/", async (req, res) => {
   // createMatchSchema ensures the body we are passing in matches our schema
   const parsed = createMatchSchema.safeParse(req.body);
 
-  // destructure data, startTime and endTime from parsed
-  const {
-    data: { startTime, endTime, homeScore, awayScore, status },
-  } = parsed;
-
   if (!parsed.success) {
-    res.status(400).json({
+    return res.status(400).json({
       error: "Invalid payload",
       details: JSON.stringify(parsed.error),
     });
   }
 
+  // destructure data, startTime and endTime from parsed
+  const { startTime, endTime, homeScore, awayScore } = parsed.data;
   try {
     // we are inserting the match into the matches database table
     // ...parsed.data, inputting all the data information using the ... spread
@@ -82,9 +78,8 @@ matchRouter.post("/", async (req, res) => {
     // send info back to frontend
     res.status(201).json({ data: event });
   } catch (err) {
+    console.error("Failed to create match", err);
     // status of 500 means server error
-    res
-      .status(500)
-      .json({ error: "Failed to create match", details: JSON.stringify(err) });
+    res.status(500).json({ error: "Failed to create match" });
   }
 });
