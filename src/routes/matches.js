@@ -77,8 +77,10 @@ matchRouter.post("/", async (req, res) => {
 
     // this triggers a websocket broadcast whenever a match is created
     // sends info to all active connections
-    if (res.app.locals.broadcastMatchCreated) {
-      res.app.locals.broadcastMatchCreated(event);
+    try {
+      res.app.locals.broadcastMatchCreated?.(event);
+    } catch (e) {
+      console.error("Failed to broadcast match_created", e);
     }
 
     // send info back to frontend
