@@ -31,12 +31,29 @@ export function attachWebSocketServer(server) {
     maxPayload: 1024 * 1024, // maximum size allowed for an incoming message 1mb
   });
 
+  // we implement a "ping/pong" heartbeat as well to detect and clean up dead connections
   wss.on("connection", (socket) => {
+    socket.isAlive = true;
+
+    socket.on("pong", () => {
+      socket.isAlive = true;
+    });
+
     sendJson(socket, { type: "Welcome" });
 
     // handle the errors to prevent server from crashing on bad disconnect
     socket.on("error", console.error);
   });
+
+  const interval = setInterval(() => {
+    wss.clients.forEach((ws) => {
+      if (ws.isAlive === false) return ws.terminate();
+      ws.isAlive = false;
+      ws.ping();
+    });
+  }, 30000);
+
+  wss.on("close", () => clearInterval(interval));
 
   // returns a clean function to the rest of the app
   function broadcastMatchCreated(match) {
