@@ -2,6 +2,7 @@ import express from "express";
 import { matchRouter } from "./routes/matches.js";
 import http from "http";
 import { attachWebSocketServer } from "./ws/server.js";
+import { securityMiddleware } from "./arcjet.js";
 
 const PORT = Number(process.env.PORT) || 8000;
 
@@ -15,6 +16,9 @@ const server = http.createServer(app);
 
 // middleware that allows express to read JSON content/data
 app.use(express.json());
+
+// here we activate the arcjet middleware
+app.use(securityMiddleware());
 
 // backend home route
 app.get("/", (req, res) => {
