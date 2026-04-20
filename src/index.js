@@ -17,13 +17,13 @@ const server = http.createServer(app);
 // middleware that allows express to read JSON content/data
 app.use(express.json());
 
+// here we activate the arcjet middleware
+app.use(securityMiddleware());
+
 // backend home route
 app.get("/", (req, res) => {
   res.json({ message: "Sportz App WebSockets server is running 🚀" });
 });
-
-// here we activate the arcjet middleware
-app.use(securityMiddleware());
 
 // to get the list of matches
 app.use("/matches", matchRouter);

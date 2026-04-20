@@ -5,7 +5,13 @@ const arcjetKey = process.env.ARCJET_API_KEY;
 // DRY_RUN mode allows you to see what arcjet would block before arcjet blocks it
 const arcjetMode = process.env.ARCJET_MODE === "DRY_RUN" ? "DRY_RUN" : "LIVE";
 
-if (!arcjetKey) throw new Error("Missing arcjetKey environment variable");
+if (!arcjetKey && process.env.NODE_ENV === "production") {
+  throw new Error("Missing ARCJET_API_KEY environment variable");
+}
+
+if (!arcjetKey) {
+  console.warn("ARCJET_API_KEY is not set; Arcjet protection is disabled");
+}
 
 // create and export a new instance of arcjet
 // this protects our http or REST
