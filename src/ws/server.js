@@ -1,4 +1,5 @@
 import { WebSocket, WebSocketServer } from "ws";
+import { wsArcjet } from "../arcjet.js";
 
 function sendJson(socket, payload) {
   // if not open, do nothing
@@ -32,7 +33,31 @@ export function attachWebSocketServer(server) {
   });
 
   // we implement a "ping/pong" heartbeat as well to detect and clean up dead connections
-  wss.on("connection", (socket) => {
+  wss.on("connection", async (socket, req) => {
+    // check whether wsArcjet exists
+    if (wsArcjet) {
+      try {
+        const decision = await wsArcjet.protect(req);
+
+        // check whether decision has been denied
+        if (decision.isDenied()) {
+          // 1013: try again later
+          // 1008: policy violation
+          const code = decision.reason.isRateLimit() ? 1013 : 1008;
+          const reason = decision.reason.isRateLimit()
+            ? "Rate limit exceeded"
+            : "Access denied";
+
+          socket.close(code, reason);
+          return;
+        }
+      } catch (e) {
+        console.error("WS connection error", e);
+        socket.close(1011, "Server security error");
+        return;
+      }
+    }
+
     socket.isAlive = true;
 
     socket.on("pong", () => {
