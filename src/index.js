@@ -2,6 +2,7 @@ import express from "express";
 import { matchRouter } from "./routes/matches.js";
 import http from "http";
 import { attachWebSocketServer } from "./ws/server.js";
+import { securityMiddleware } from "./arcjet.js";
 
 const PORT = Number(process.env.PORT) || 8000;
 
@@ -20,6 +21,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({ message: "Sportz App WebSockets server is running 🚀" });
 });
+
+// here we activate the arcjet middleware
+app.use(securityMiddleware());
 
 // to get the list of matches
 app.use("/matches", matchRouter);
