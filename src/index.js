@@ -1,5 +1,6 @@
 import express from "express";
 import { matchRouter } from "./routes/matches.js";
+import { commentaryRouter } from "./routes/commentary.js";
 import http from "http";
 import { attachWebSocketServer } from "./ws/server.js";
 import { securityMiddleware } from "./arcjet.js";
@@ -18,7 +19,7 @@ const server = http.createServer(app);
 app.use(express.json());
 
 // here we activate the arcjet middleware
-app.use(securityMiddleware());
+// app.use(securityMiddleware());
 
 // backend home route
 app.get("/", (req, res) => {
@@ -27,6 +28,8 @@ app.get("/", (req, res) => {
 
 // to get the list of matches
 app.use("/matches", matchRouter);
+
+app.use("/matches/:id/commentary", commentaryRouter);
 
 // initialise websocket and get access to the broadcastMatchCreated function
 const { broadcastMatchCreated } = attachWebSocketServer(server);
