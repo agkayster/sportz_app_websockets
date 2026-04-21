@@ -309,3 +309,26 @@ Ensure all schemas are exported and use camelCase for variables and the naming c
 ### CODE TO TEST ARCJET PROTECTION ####
 for i in {1..60}; do curl -s -o /dev/null -w "%{http_code}\n" -H "User-Agent:" http://localhost:8000/matches; done
 bash -c 'for i in {1..60}; do curl -s -o /dev/null -w "%{http_code}\n" -H "User-Agent: Mozilla/5.0" http://localhost:8000/matches; done'
+
+
+#### PROMPT FOR COMMENTARY SCHEMA ##########################
+Act as a Senior Node.js Developer. Using Zod, create a validation file `src/validation/commentary.js`.
+
+1. Create `listCommentaryQuerySchema`: an object with an optional `limit` (coerced number, positive, max 100).
+2. Create `createCommentarySchema`: include fields for minute (non-negative int), sequence, period (string), eventType, actor, team, message (required string), metadata (record), and tags (array of strings).
+3. Use ES Modules and export the schemas.
+
+#### PROMPT FOR GENERATING A POST ROUTE FOR COMMENTARY.JS #########
+Act as a Senior Node.js Developer and Generate a POST route for `commentary.js` using Drizzle ORM.
+
+1. Validate `req.params` using `matchIdParamSchema` and `req.body` using `createCommentarySchema`. Insert the data into the `commentary` table and return the result.
+2. Use ES Modules and handle errors with try/catch.
+
+#### PROMPT FOR GENERATING A GET "/" ROUTE FOR A NESTED COMMENTARY ROUTER FOR A SPECIFIC MATCH/EVENT #########
+Act as a Senior Node.js Developer. Using Drizzle ORM and Express, generate a GET "/" route for a nested commentary router.
+
+1. Validate req.params using matchIdParamSchema and req.query using listCommentaryQuerySchema.
+2. Fetch data from the "commentary" table where "matchId" equals the ID from params.
+3. Order the results by "createdAt" in descending order so the newest events appear first.
+4. Apply a limit based on the query parameter (defaulting to 100 with a MAX_LIMIT safety cap).
+5. Use ES Modules and handle errors with try/catch
