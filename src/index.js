@@ -19,7 +19,7 @@ const server = http.createServer(app);
 app.use(express.json());
 
 // here we activate the arcjet middleware
-// app.use(securityMiddleware());
+app.use(securityMiddleware());
 
 // backend home route
 app.get("/", (req, res) => {
