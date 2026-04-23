@@ -19,7 +19,7 @@ const server = http.createServer(app);
 app.use(express.json());
 
 // here we activate the arcjet middleware
-app.use(securityMiddleware());
+// app.use(securityMiddleware());
 
 // backend home route
 app.get("/", (req, res) => {
@@ -32,10 +32,13 @@ app.use("/matches", matchRouter);
 app.use("/matches/:id/commentary", commentaryRouter);
 
 // initialise websocket and get access to the broadcastMatchCreated function
-const { broadcastMatchCreated } = attachWebSocketServer(server);
+const { broadcastMatchCreated, broadcastCommentary } =
+  attachWebSocketServer(server);
 
 // app.locals is Express's global object accessible from any request
 app.locals.broadcastMatchCreated = broadcastMatchCreated;
+
+app.locals.broadcastCommentary = broadcastCommentary;
 
 server.listen(PORT, HOST, () => {
   const baseUrl =
