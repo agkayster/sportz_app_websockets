@@ -77,6 +77,13 @@ commentaryRouter.post("/", async (req, res) => {
       })
       .returning();
 
+    // sending the commentary only to those interested in the match we broadcasted
+    if (res.app.locals.broadcastCommentary) {
+      // result.matchId allows the server know which room to send the message to
+      // result is the actual commentary getting created
+      res.app.locals.broadcastCommentary(result.matchId, result);
+    }
+
     res.status(201).json({ data: result });
   } catch (err) {
     console.error("Failed to create commentary", err);
